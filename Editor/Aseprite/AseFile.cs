@@ -153,7 +153,12 @@ namespace Aseprite
                     if (visibility == false || layer.LayerType == LayerType.Group)
                         continue;
 
-                    textures.Add(GetTextureFromCel(cels[i]));
+
+                    // Changed in favor of https://github.com/thekidder/unity-aseprite-importer/commit/ffcc65982747359429b99f4efd20fb7d66715b15
+                    // textures.Add(GetTextureFromCel(cels[i]));
+                    var texture = GetTextureFromCel(cels[i]);
+                    texture = Texture2DBlender.ApplyLayerOpacity(texture, opacity);
+                    textures.Add(texture);
                 }
             }
 
@@ -284,7 +289,7 @@ namespace Aseprite
             return animations.ToArray();
         }
 
-        public MetaData[] GetMetaData(Vector2 spritePivot, int pixelsPerUnit)
+        public MetaData[] GetMetaData(Vector2 spritePivot, float pixelsPerUnit)
         {
             Dictionary<int, MetaData> metadatas = new Dictionary<int, MetaData>();
 

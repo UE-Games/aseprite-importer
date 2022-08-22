@@ -104,8 +104,38 @@ namespace Aseprite.Utils
                     Color c = new Color();
                     b.a = b.a * opacity;
 
-                    c = ((1f - b.a) * a) + (b.a * b);
+                    // c = ((1f - b.a) * a) + (b.a * b);
+                    // See removal description below:
+
                     c.a = a.a + b.a * (1f - a.a);
+
+                    // Normal type layers blending on import.
+                    // Originally at https://github.com/gavriktonio/unity-aseprite-importer/commit/64d4ebac48e5019042f5182a277d7da8a862b614
+                    c.r = ((b.r * b.a) + (a.r * a.a * (1f - b.a))) / c.a;
+                    c.g = ((b.g * b.a) + (a.g * a.a * (1f - b.a))) / c.a;
+                    c.b = ((b.b * b.a) + (a.b * a.a * (1f - b.a))) / c.a;
+
+                    newLayer.SetPixel(x, y, c);
+                }
+            }
+
+            newLayer.Apply();
+
+            return newLayer;
+        }
+
+
+        // Added in favor of https://github.com/thekidder/unity-aseprite-importer/commit/ffcc65982747359429b99f4efd20fb7d66715b15
+        public static Texture2D ApplyLayerOpacity(Texture2D layer, float opacity)
+        {
+            Texture2D newLayer = new Texture2D(layer.width, layer.height);
+
+            for (int x = 0; x < layer.width; x++)
+            {
+                for (int y = 0; y < layer.height; y++)
+                {
+                    Color c = layer.GetPixel(x, y);
+                    c.a *= opacity;
 
                     newLayer.SetPixel(x, y, c);
                 }

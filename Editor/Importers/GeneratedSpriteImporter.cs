@@ -82,6 +82,11 @@ namespace AsepriteImporter.Importers {
 
             var width = cols * (size.x + padding * 2);
             var height = rows * (size.y + padding * 2);
+            // Generating an extra row on atlas sometimes.
+            // Originally at https://github.com/gavriktonio/unity-aseprite-importer/commit/7b14c58d9de642a043f61dec61a1970c770aa206
+            if (cols * (rows - 1) >= sprites.Length)
+                rows--;
+
             var atlas = Texture2DUtil.CreateTransparentTexture(width, height);
 
             var index = 0;
