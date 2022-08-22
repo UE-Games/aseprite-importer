@@ -1,7 +1,7 @@
 {
     "name": "io.tinu.asepriteimporter",
     "displayName": "Aseprite Importer",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "unity": "2021.3",
     "unityRelease": "8f1",
     "description": "An aseprite-file importer for unity written in C#, built upon the experimental AssetImporter API.",
