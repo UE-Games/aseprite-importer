@@ -236,7 +236,7 @@ namespace AsepriteImporter.Importers {
                 return WrapMode.Loop;
             }
 
-            return WrapMode.Once;
+            return WrapMode.Loop;
         }
 
         private List<AnimationClip> GenerateAnimations(AseFile aseFile, List<Sprite> sprites) {
@@ -258,7 +258,7 @@ namespace AsepriteImporter.Importers {
                     clip.wrapMode = GetDefaultWrapMode(animation.TagName);
                 } else {
                     AnimationClipSettings animSettings = AnimationUtility.GetAnimationClipSettings(clip);
-                    clip.wrapMode = animSettings.loopTime ? WrapMode.Loop : WrapMode.Once;
+                    clip.wrapMode = WrapMode.Loop;
                 }
 
                 clip.name = fileName + "_" + animation.TagName;

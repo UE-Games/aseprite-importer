@@ -152,8 +152,8 @@ namespace AsepriteImporter.Importers
 
                 if (!importSettings.loopTime)
                 {
-                    animationClip.wrapMode = WrapMode.Once;
-                    settings.loopTime = false;
+                    animationClip.wrapMode = WrapMode.Loop;
+                    settings.loopTime = true;
                 }
 
                 AnimationUtility.SetAnimationClipSettings(animationClip, settings);
