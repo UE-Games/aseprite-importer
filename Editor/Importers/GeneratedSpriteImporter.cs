@@ -250,7 +250,10 @@ namespace AsepriteImporter.Importers {
 
             int index = 0;
             foreach (var animation in animations) {
-                var path = directoryName + "/" + fileName + "_" + animation.TagName + ".anim";
+                if (!AssetDatabase.IsValidFolder(directoryName + "/Clips"))
+                    AssetDatabase.CreateFolder(directoryName, "Clips");
+
+                var path = directoryName + "/Clips/" + animation.TagName + ".anim";
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
                 if (clip == null) {
                     clip = new AnimationClip();
@@ -261,7 +264,7 @@ namespace AsepriteImporter.Importers {
                     clip.wrapMode = WrapMode.Loop;
                 }
 
-                clip.name = fileName + "_" + animation.TagName;
+                clip.name = animation.TagName;
                 clip.frameRate = 120;
 
                 EditorCurveBinding editorBinding = new EditorCurveBinding();
@@ -391,25 +394,52 @@ namespace AsepriteImporter.Importers {
                 controller.AddLayer("Default");
 
                 foreach (var animation in animations) {
-                    var stateName = animation.name;
-                    stateName = stateName.Replace(fileName + "_", "");
-
-                    AnimatorState state = controller.layers[0].stateMachine.AddState(stateName);
+                    AnimatorState state = controller.layers[0].stateMachine.AddState(animation.name);
                     state.motion = animation;
                 }
             } else {
                 var clips = new Dictionary<string, AnimationClip>();
-                foreach (var anim in animations) {
-                    var stateName = anim.name;
-                    stateName = stateName.Replace(fileName + "_", "");
-                    clips[stateName] = anim;
-                }
+                foreach (var anim in animations)
+                    clips[anim.name] = anim;
 
                 var childStates = controller.layers[0].stateMachine.states;
                 foreach (var childState in childStates) {
                     if (clips.TryGetValue(childState.state.name, out AnimationClip clip)) {
+                        Debug.Log($"Updating animation clip '{childState.state.name}'");
+
                         childState.state.motion = clip;
                     }
+                    else {
+                        var cp = $"{directoryName}{Path.DirectorySeparatorChar}Clips{Path.DirectorySeparatorChar}{childState.state.name}.anim";
+
+                        Debug.Log($"Removing animation clip '{childState.state.name}' from '{cp}'");
+
+                        clips.Remove(childState.state.name);
+                        controller.layers[0].stateMachine.RemoveState(childState.state);
+                        AssetDatabase.DeleteAsset(cp);
+                    }
+                }
+
+                foreach (var clip in clips) {
+                    var found = false;
+
+                    foreach (var childState in controller.layers[0].stateMachine.states) {
+                        if (childState.state.name == clip.Key) {
+                            // Debug.Log($"Found animation clip '{childState.state.name}'");
+
+                            found = true;
+
+                            break;
+                        }
+                    }
+
+                    if (found)
+                        continue;
+
+                    Debug.Log($"Adding animation clip '{clip.Key}' to the AnimationController");
+
+                    var state = controller.layers[0].stateMachine.AddState(clip.Key);
+                    state.motion = clip.Value;
                 }
             }
 
@@ -434,11 +464,8 @@ namespace AsepriteImporter.Importers {
 
             controller.runtimeAnimatorController = baseController;
             var clips = new Dictionary<string, AnimationClip>();
-            foreach (var anim in animations) {
-                var stateName = anim.name;
-                stateName = stateName.Replace(fileName + "_", "");
-                clips[stateName] = anim;
-            }
+            foreach (var anim in animations)
+                clips[anim.name] = anim;
 
             var clipPairs = new List<KeyValuePair<AnimationClip, AnimationClip>>(controller.overridesCount);
             controller.GetOverrides(clipPairs);

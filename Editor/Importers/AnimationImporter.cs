@@ -78,7 +78,7 @@ namespace AsepriteImporter.Importers
 
                 AnimationClip animationClip = new AnimationClip
                 {
-                    name = parentName + "_" + animation.TagName,
+                    name = animation.TagName,
                     frameRate = 120
                 };
 
