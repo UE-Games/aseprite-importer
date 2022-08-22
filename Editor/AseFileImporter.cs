@@ -125,7 +125,7 @@ namespace AsepriteImporter {
         }
 
         private string GetFileName(string assetPath) {
-            var parts = assetPath.Split('/');
+            var parts = assetPath.Split(Path.DirectorySeparatorChar);
             var filename = parts[parts.Length - 1];
             return filename.Substring(0, filename.LastIndexOf('.'));
         }
