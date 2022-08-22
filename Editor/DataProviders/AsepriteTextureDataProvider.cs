@@ -26,8 +26,16 @@ namespace AsepriteImporter.DataProviders
             return null;
         }
 
-        public void GetTextureActualWidthAndHeight(out int width, out int height)
-        {
+        public void GetTextureActualWidthAndHeight(out int width, out int height) {
+            // [FIXME] There is a slight chance the texture is not readable, in that case we return 0/0. This is not ideal, but it is better than crashing.
+
+            if (aseFileImporter.Texture == null) {
+                width = 0;
+                height = 0;
+
+                return;
+            }
+
             width = aseFileImporter.Texture.width;
             height = aseFileImporter.Texture.height;
         }
