@@ -37,6 +37,10 @@ namespace Aseprite.Chunks
 
             ushort nameLength = reader.ReadUInt16();
             TagName = Encoding.Default.GetString(reader.ReadBytes(nameLength));
+
+            // Generate random tag name if none is provided
+            if (string.IsNullOrEmpty(TagName))
+                TagName = "UntitledTag" + Random.Range(1, 100);
         }
     }
 
