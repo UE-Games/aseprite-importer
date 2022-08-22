@@ -79,7 +79,7 @@ namespace AsepriteImporter.Importers
                 AnimationClip animationClip = new AnimationClip
                 {
                     name = parentName + "_" + animation.TagName,
-                    frameRate = 25
+                    frameRate = 120
                 };
 
                 EditorCurveBinding spriteBinding = new EditorCurveBinding
