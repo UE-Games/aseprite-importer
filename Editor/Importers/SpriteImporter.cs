@@ -94,6 +94,11 @@ namespace AsepriteImporter
                     done = true;
                 }
             }
+
+                if (done) {
+                    EditorApplication.update -= OnEditorUpdate;
+                }
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -103,11 +108,6 @@ namespace AsepriteImporter
             }
         }
 
-            if (done) {
-                EditorApplication.update -= OnEditorUpdate;
-            }
-        }
-        
         protected virtual bool OnUpdate()
         {
             return true;
