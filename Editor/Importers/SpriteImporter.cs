@@ -80,6 +80,8 @@ namespace AsepriteImporter
         {
             AssetDatabase.Refresh();
             var done = false;
+            try
+            {
             if (OnUpdate()) {
                 done = true;
             } else {
@@ -88,6 +90,14 @@ namespace AsepriteImporter
                     done = true;
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                updates = 0;
+                EditorApplication.update -= OnEditorUpdate;
+                throw;
+            }
+        }
 
             if (done) {
                 EditorApplication.update -= OnEditorUpdate;

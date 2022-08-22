@@ -65,7 +65,14 @@ namespace AsepriteImporter.Editors
                     EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "baseAnimator"));
                 }
 
+                EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "SeparateLayers"),
+                    new GUIContent("SeparateLayers"));
+
                 EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "buildAtlas"));
+
+                //var paddingProperty = SerializedObject.FindProperty(settings + "padding");
+                //var padding = paddingProperty.intValue;
+                EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "padding"));
 
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -87,6 +94,8 @@ namespace AsepriteImporter.Editors
                     EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "tileEmpty"),
                         new GUIContent("Empty Tile Behaviour",
                             "Behavior for empty tiles:\nKeep - Keep empty tiles\nIndex - Remove empty tiles, but still index them\nRemove - Remove empty tiles completely"));
+                    EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "SeparateLayers"),
+                        new GUIContent("SeparateLayers"));
 
                     // tileNameType
                     var tileNameTypeProperty = SerializedObject.FindProperty(settings + "tileNameType");
@@ -98,6 +107,22 @@ namespace AsepriteImporter.Editors
                     {
                         tileNameTypeProperty.enumValueIndex = (int) tileNameType;
                     }
+
+                    EditorGUI.indentLevel--;
+                }
+            }
+
+            if (ImportType == AseFileImportType.Slice)
+            {
+                EditorGUILayout.LabelField("Slice Options", EditorStyles.boldLabel);
+                {
+                    EditorGUI.indentLevel++;
+                    PivotPopup("Slice Pivot");
+                    EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "tileEmpty"),
+                        new GUIContent("Empty Slice Behaviour",
+                            "Behavior for empty slices:\nKeep - Keep empty slices\nIndex - Remove empty slices, but still index them\nRemove - Remove empty slices completely"));
+                    EditorGUILayout.PropertyField(SerializedObject.FindProperty(settings + "SeparateLayers"),
+                        new GUIContent("SeparateLayers"));
 
                     EditorGUI.indentLevel--;
                 }

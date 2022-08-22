@@ -7,6 +7,7 @@ namespace AsepriteImporter {
     public enum AseFileImportType {
         Sprite,
         Tileset,
+        Slice
     }
 
     public enum TileNameType {
@@ -54,5 +55,7 @@ namespace AsepriteImporter {
         [SerializeField] public Vector2Int tileSize = new Vector2Int(16, 16);
         [SerializeField] public TileNameType tileNameType = TileNameType.Index;
         [SerializeField] public EmptyTileBehaviour tileEmpty = EmptyTileBehaviour.Keep;
+
+        [SerializeField] public string[] SeparateLayers;
     }
 }

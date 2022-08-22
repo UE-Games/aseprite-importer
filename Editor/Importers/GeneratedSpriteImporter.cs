@@ -21,7 +21,8 @@ namespace AsepriteImporter.Importers {
         private int updateLimit;
         private int rows;
         private int cols;
-        private Texture2D []frames;
+        private Texture2D[] mainFrames;
+        private Dictionary<string, Texture2D[]> separatedFrames = new Dictionary<string, Texture2D[]>();
 
 
         public GeneratedSpriteImporter(AseFileImporter importer) : base(importer)
@@ -32,12 +33,37 @@ namespace AsepriteImporter.Importers {
         {
             size = new Vector2Int(AsepriteFile.Header.Width, AsepriteFile.Header.Height);
 
-            frames = AsepriteFile.GetFrames();
-            BuildAtlas(AssetPath);
+            fileName = Path.GetFileNameWithoutExtension(AssetPath);
+            directoryName = Path.GetDirectoryName(AssetPath) + "/" + fileName;
+            if (!AssetDatabase.IsValidFolder(directoryName)) {
+                AssetDatabase.CreateFolder(Path.GetDirectoryName(AssetPath), fileName);
+            }
+
+            filePath = directoryName + "/" + fileName + ".png";
+
+            if (Settings.SeparateLayers == null || Settings.SeparateLayers.Length == 0)
+            {
+                mainFrames = AsepriteFile.GetFrames();
+                BuildAtlas(AssetPath, mainFrames, filePath);
+            }
+            else
+            {
+                mainFrames = AsepriteFile.GetFrames(Settings.SeparateLayers);
+                BuildAtlas(AssetPath, mainFrames, filePath);
+
+                foreach (var separateLayerName in Settings.SeparateLayers)
+                {
+                    var frames = AsepriteFile.GetFrames(null, new []{separateLayerName});
+                    string filePathWithoutExtension = filePath.Replace(Path.GetExtension(filePath), "");
+                    string separatedFilePath = filePathWithoutExtension + "_" + separateLayerName + Path.GetExtension(filePath);
+                    BuildAtlas(separatedFilePath, frames, separatedFilePath);
+                    separatedFrames.Add(separateLayerName, frames);
+                }
+            }
         }
 
         protected override bool OnUpdate() {
-            if (GenerateSprites()) {
+            if (GenerateSprites(fileName, mainFrames)) {
                 GeneratorAnimations();
                 return true;
             }
@@ -45,18 +71,10 @@ namespace AsepriteImporter.Importers {
             return false;
         }
 
-        private void BuildAtlas(string acePath) {
-            fileName = Path.GetFileNameWithoutExtension(acePath);
-            directoryName = Path.GetDirectoryName(acePath) + "/" + fileName;
-            if (!AssetDatabase.IsValidFolder(directoryName)) {
-                AssetDatabase.CreateFolder(Path.GetDirectoryName(acePath), fileName);
-            }
-
-            filePath = directoryName + "/" + fileName + ".png";
-
+        private void BuildAtlas(string acePath, Texture2D[] frames, string filePathInput) {
             var atlas = GenerateAtlas(frames);
             try {
-                File.WriteAllBytes(filePath, atlas.EncodeToPNG());
+                File.WriteAllBytes(filePathInput, atlas.EncodeToPNG());
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             } catch (Exception e) {
@@ -127,7 +145,7 @@ namespace AsepriteImporter.Importers {
             atlas.SetPixels(to.x, to.y, to.width, to.height, GetPixels(sprite));
         }
 
-        private bool GenerateSprites() {
+        private bool GenerateSprites(string fileNameInput, Texture2D[] frames) {
             TextureImporter importer = AssetImporter.GetAtPath(filePath) as TextureImporter;
             if (importer == null) {
                 return false;
@@ -138,7 +156,7 @@ namespace AsepriteImporter.Importers {
             importer.mipmapEnabled = false;
             importer.filterMode = FilterMode.Point;
 
-            var metaList = CreateMetaData(fileName);
+            var metaList = CreateMetaData(fileNameInput, frames);
             var oldProperties = AseSpritePostProcess.GetPhysicsShapeProperties(importer, metaList);
 
             importer.spritesheet = metaList.ToArray();
@@ -160,7 +178,7 @@ namespace AsepriteImporter.Importers {
             return true;
         }
 
-        private List<SpriteMetaData> CreateMetaData(string fileName) {
+        private List<SpriteMetaData> CreateMetaData(string fileNameInput, Texture2D[] frames) {
             var res = new List<SpriteMetaData>();
             var index = 0;
             var height = rows * (size.y + padding * 2);
@@ -174,14 +192,14 @@ namespace AsepriteImporter.Importers {
                                          size.x,
                                          size.y);
                     var meta = new SpriteMetaData();
-                    meta.name = fileName + index.ToString("D" + count10);
+                    meta.name = fileNameInput + index.ToString("D" + count10);
                     meta.rect = rect;
                     meta.alignment = Settings.spriteAlignment;
                     meta.pivot = Settings.spritePivot;
                     res.Add(meta);
                     index++;
 
-                    if (index >= frames.Length) {
+                    if (index >= mainFrames.Length) {
                         done = true;
                         break;
                     }

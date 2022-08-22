@@ -68,13 +68,13 @@ namespace Aseprite
             return (T)chunkCache[typeof(T)];
         }
 
-        public Texture2D[] GetFrames()
+        public Texture2D[] GetFrames(string[] ignoreLayers = null, string[] onlyLayers = null)
         {
             List<Texture2D> frames = new List<Texture2D>();
 
             for (int i = 0; i < Frames.Count; i++)
             {
-                frames.Add(GetFrame(i));
+                frames.Add(GetFrame(i, ignoreLayers, onlyLayers));
             }
 
             return frames.ToArray();
@@ -165,7 +165,7 @@ namespace Aseprite
             return textures;
         }
 
-        public Texture2D GetFrame(int index)
+        public Texture2D GetFrame(int index, string[] ignoreLayers = null, string[] onlyLayers = null)
         {
             Frame frame = Frames[index];
 
@@ -181,6 +181,10 @@ namespace Aseprite
             {
                 LayerChunk layer = layers[cels[i].LayerIndex];
                 if (layer.LayerName.StartsWith("@")) //ignore metadata layer
+                    continue;
+                if (ignoreLayers != null&& ignoreLayers.Length > 0 && ignoreLayers.Contains(layer.LayerName))
+                    continue;
+                if (onlyLayers != null && onlyLayers.Length > 0 && !onlyLayers.Contains(layer.LayerName))
                     continue;
 
                 LayerBlendMode blendMode = layer.BlendMode;
