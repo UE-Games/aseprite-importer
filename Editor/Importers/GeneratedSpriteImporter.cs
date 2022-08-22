@@ -262,7 +262,7 @@ namespace AsepriteImporter.Importers {
                 }
 
                 clip.name = fileName + "_" + animation.TagName;
-                clip.frameRate = 25;
+                clip.frameRate = 120;
 
                 EditorCurveBinding editorBinding = new EditorCurveBinding();
                 editorBinding.path = "";
