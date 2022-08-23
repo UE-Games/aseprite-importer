@@ -51,6 +51,7 @@ namespace AsepriteImporter {
             skipImportProperty.boolValue = skipImport;
             if (skipImport)
             {
+                serializedObject.ApplyModifiedProperties();
                 ApplyRevertGUI();
                 return;
             }
