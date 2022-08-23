@@ -9,11 +9,9 @@ using UnityEngine;
 
 namespace AsepriteImporter {
     public class GeneratedSliceImporter : SpriteImporter {
-        private int padding = 1;
         private Vector2Int size;
         private string fileName;
         private string filePath;
-        private int updateLimit;
         private Texture2D mainImage;
         protected Dictionary<string, Texture2D> separatedImages = new Dictionary<string, Texture2D>();
 
