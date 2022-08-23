@@ -94,6 +94,9 @@ namespace AsepriteImporter {
 
         public override void OnImportAsset(AssetImportContext ctx)
         {
+            if (settings.SkipImport)
+                return;
+
             texture = null;
             
             name = GetFileName(ctx.assetPath);
