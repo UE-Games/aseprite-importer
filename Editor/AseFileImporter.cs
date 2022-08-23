@@ -196,7 +196,7 @@ namespace AsepriteImporter {
             if (typeof(T) == typeof(ISpriteEditorDataProvider))
                 return this as T;
 
-            Debug.Log(typeof(T).Name + " not found");
+            // Debug.Log(typeof(T).Name + " not found");
             return null;
         }
 
