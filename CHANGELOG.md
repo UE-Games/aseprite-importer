@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2022-08-23
+### Changed
+- Fixing a warning when not properly applying modified properties
+- Fixing a warning on unused properties
+- Fixing an error when importing with skip import on
+- Fixing a warning on invalid data providers
+
 ## [1.1.2] - 2022-08-23
 ### Changed
 - Directory separators are now platform independent
