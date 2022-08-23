@@ -24,12 +24,12 @@ namespace AsepriteImporter {
         public override void OnImport()
         {
             fileName= Path.GetFileNameWithoutExtension(AssetPath);
-            var directoryName = Path.GetDirectoryName(AssetPath) + "/" + fileName;
+            var directoryName = Path.GetDirectoryName(AssetPath) + Path.DirectorySeparatorChar + fileName;
             if (!AssetDatabase.IsValidFolder(directoryName)) {
                 AssetDatabase.CreateFolder(Path.GetDirectoryName(AssetPath), fileName);
             }
 
-            filePath = directoryName + "/" + fileName + ".png";
+            filePath = directoryName + Path.DirectorySeparatorChar + fileName + ".png";
 
             size = new Vector2Int(AsepriteFile.Header.Width, AsepriteFile.Header.Height);
 
@@ -59,7 +59,7 @@ namespace AsepriteImporter {
             foreach (var separatedImage in separatedImages)
             {
             try {
-                    File.WriteAllBytes(directoryName + "/" + fileName + '_' + separatedImage.Key +".png", separatedImage.Value.EncodeToPNG());
+                    File.WriteAllBytes(directoryName + Path.DirectorySeparatorChar + fileName + '_' + separatedImage.Key + ".png", separatedImage.Value.EncodeToPNG());
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             } catch (Exception e) {

@@ -34,12 +34,12 @@ namespace AsepriteImporter {
 
         private void BuildAtlas(string acePath, Texture2D sprite) {
             fileName= Path.GetFileNameWithoutExtension(acePath);
-            var directoryName = Path.GetDirectoryName(acePath) + "/" + fileName;
+            var directoryName = Path.GetDirectoryName(acePath) + Path.DirectorySeparatorChar + fileName;
             if (!AssetDatabase.IsValidFolder(directoryName)) {
                 AssetDatabase.CreateFolder(Path.GetDirectoryName(acePath), fileName);
             }
 
-            filePath = directoryName + "/" + fileName + ".png";
+            filePath = directoryName + Path.DirectorySeparatorChar + fileName + ".png";
 
             GenerateAtlas(sprite);
             try {

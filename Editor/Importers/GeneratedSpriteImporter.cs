@@ -33,12 +33,12 @@ namespace AsepriteImporter.Importers {
             size = new Vector2Int(AsepriteFile.Header.Width, AsepriteFile.Header.Height);
 
             fileName = Path.GetFileNameWithoutExtension(AssetPath);
-            directoryName = Path.GetDirectoryName(AssetPath) + "/" + fileName;
+            directoryName = Path.GetDirectoryName(AssetPath) + Path.DirectorySeparatorChar + fileName;
             if (!AssetDatabase.IsValidFolder(directoryName)) {
                 AssetDatabase.CreateFolder(Path.GetDirectoryName(AssetPath), fileName);
             }
 
-            filePath = directoryName + "/" + fileName + ".png";
+            filePath = directoryName + Path.DirectorySeparatorChar + fileName + ".png";
 
             if (Settings.SeparateLayers == null || Settings.SeparateLayers.Length == 0)
             {
@@ -250,10 +250,10 @@ namespace AsepriteImporter.Importers {
 
             int index = 0;
             foreach (var animation in animations) {
-                if (!AssetDatabase.IsValidFolder(directoryName + "/Clips"))
+                if (!AssetDatabase.IsValidFolder(directoryName + Path.DirectorySeparatorChar + "Clips"))
                     AssetDatabase.CreateFolder(directoryName, "Clips");
 
-                var path = directoryName + "/Clips/" + animation.TagName + ".anim";
+                var path = directoryName + Path.DirectorySeparatorChar + "Clips" + Path.DirectorySeparatorChar + animation.TagName + ".anim";
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
                 if (clip == null) {
                     clip = new AnimationClip();
@@ -386,7 +386,7 @@ namespace AsepriteImporter.Importers {
         }
 
         private void CreateAnimatorController(List<AnimationClip> animations) {
-            var path = directoryName + "/" + fileName + ".controller";
+            var path = directoryName + Path.DirectorySeparatorChar + fileName + ".controller";
             AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
 
             if (controller == null) {
@@ -448,7 +448,7 @@ namespace AsepriteImporter.Importers {
         }
 
         private void CreateAnimatorOverrideController(List<AnimationClip> animations) {
-            var path = directoryName + "/" + fileName + ".overrideController";
+            var path = directoryName + Path.DirectorySeparatorChar + fileName + ".overrideController";
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorOverrideController>(path);
             var baseController = controller?.runtimeAnimatorController;
             if (controller == null) {
@@ -482,7 +482,7 @@ namespace AsepriteImporter.Importers {
         }
 
         private void CreateSpriteAtlas(List<Sprite> sprites) {
-            var path = directoryName + "/" + fileName + ".spriteatlas";
+            var path = directoryName + Path.DirectorySeparatorChar + fileName + ".spriteatlas";
             var atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(path);
             if (atlas == null) {
                 atlas = new SpriteAtlas();

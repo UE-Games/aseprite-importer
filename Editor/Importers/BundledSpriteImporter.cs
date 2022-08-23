@@ -271,7 +271,7 @@ namespace AsepriteImporter.Importers
 
         private string GetFileName(string assetPath)
         {
-            string[] parts = assetPath.Split('/');
+            string[] parts = assetPath.Split(Path.DirectorySeparatorChar);
             string filename = parts[parts.Length - 1];
 
             return filename.Substring(0, filename.LastIndexOf('.'));
@@ -279,7 +279,7 @@ namespace AsepriteImporter.Importers
 
         private string GetPath(string assetPath)
         {
-            string[] parts = assetPath.Split('/');
+            string[] parts = assetPath.Split(Path.DirectorySeparatorChar);
             string filename = parts[parts.Length - 1];
 
             return assetPath.Replace(filename, "");
